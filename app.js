@@ -46,3 +46,37 @@ function updateHeader() {
 
 window.addEventListener('scroll', updateHeader, { passive: true });
 updateHeader();
+
+// Scroll-driven Hero 横向裁剪收缩：两侧向内收窄到一定比例后停止，
+// 文字 font-size 不变、只是背景与文字一起被裁出视野（高度保持 100vh，正常上移）
+const heroCard = document.querySelector('.hero-card');
+
+function updateHeroZoom() {
+  if (!heroCard) return;
+  const vh = window.innerHeight;
+
+  // 首屏滚完即完成收缩
+  let p = window.scrollY / vh;
+  p = Math.max(0, Math.min(1, p));
+
+  // 非线性：cubic ease-out，收尾更「粘」
+  let t = 1 - Math.pow(1 - p, 3);
+
+  // 缩小一段后就停住：两侧最多各裁 4%，最终可见 92% 宽度（良好比例）
+  t = Math.min(t, 1);
+  const side = t * 4; // 百分比，两侧各裁 side%
+  heroCard.style.clipPath = `inset(0 ${side}% 0 ${side}%)`;
+}
+
+let heroRaf = null;
+function scheduleHeroZoom() {
+  if (heroRaf) return;
+  heroRaf = requestAnimationFrame(() => {
+    heroRaf = null;
+    updateHeroZoom();
+  });
+}
+
+window.addEventListener('scroll', scheduleHeroZoom, { passive: true });
+window.addEventListener('resize', scheduleHeroZoom, { passive: true });
+updateHeroZoom();

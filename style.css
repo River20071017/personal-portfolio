@@ -168,13 +168,19 @@ a {
   background: var(--grad-cover-1);
 }
 
-/* ============ 1. Hero（居中对称：顶部标签 → 大标题 → 描述） ============ */
+/* ============ 1. Hero（滚动横向裁剪收缩：两侧收窄、文字不缩放、高度保持 100vh） ============ */
+.hero-card {
+  will-change: clip-path;
+}
+
 .hero {
   position: relative;
-  padding: 120px 0;
+  overflow: hidden;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
   background-image: url("assets/img/hero-bg.jpg");
   background-size: cover;
