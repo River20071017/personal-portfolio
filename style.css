@@ -1,0 +1,237 @@
+/* ============================================================
+   V1 骨架样式 —— 只做结构与占位素材
+   遵守「V1 不许做」清单：不设圆角(头像圆形除外，属需求)、
+   不设阴影层次、不设边框粗细、不设动画/过渡/easing、不设玻璃拟态、
+   不精调渐变色值、不设 hover 形态、字体统一 system-ui。
+   ============================================================ */
+
+:root {
+  /* 占位渐变色值，V2 再精调 */
+  --grad-avatar: linear-gradient(135deg, #6366f1, #a855f7);
+  --grad-cover-1: linear-gradient(135deg, #0ea5e9, #14b8a6);
+  --grad-cover-2: linear-gradient(135deg, #f59e0b, #ef4444);
+
+  --bg: #0b1020;
+  --bg-spot-1: rgba(99, 102, 241, 0.25);
+  --bg-spot-2: rgba(168, 85, 247, 0.2);
+
+  --text: #e5e7eb;
+  --text-muted: #9ca3af;
+  --line: #1f2937;
+
+  /* 导航留位高度 */
+  --header-h: 64px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* 锚点跳转时避开 sticky 导航 */
+  scroll-padding-top: var(--header-h);
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--text);
+  background-color: var(--bg);
+  line-height: 1.6;
+}
+
+/* 背景：CSS 渐变 + blur 光斑（固定于一层的装饰，不参与交互） */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(600px 400px at 15% 20%, var(--bg-spot-1), transparent 70%),
+    radial-gradient(500px 420px at 85% 75%, var(--bg-spot-2), transparent 70%);
+  filter: blur(60px);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ============ Header（Sticky） ============ */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: var(--header-h);
+  background: rgba(11, 16, 32, 0.9);
+  border-bottom: 1px solid var(--line);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.nav-brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.nav-list {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+}
+
+.nav-list a {
+  color: var(--text-muted);
+}
+
+/* ============ 通用 section ============ */
+.section {
+  scroll-margin-top: var(--header-h); /* 为导航留位 */
+  padding: 72px 0;
+}
+
+.section-title {
+  font-size: 1.6rem;
+  margin-bottom: 24px;
+}
+
+.section-body {
+  color: var(--text-muted);
+  max-width: 640px;
+}
+
+/* ============ 1. Hero ============ */
+.hero {
+  padding: 96px 0;
+}
+
+.avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%; /* 「圆块」为需求本身，非装饰圆角 */
+  background: var(--grad-avatar);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #fff;
+  margin-bottom: 24px;
+}
+
+.hero-kicker {
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.hero-name {
+  font-size: 2.4rem;
+  margin-bottom: 8px;
+}
+
+.hero-subtitle {
+  color: var(--text-muted);
+}
+
+/* ============ 3. 兴趣爱好 ============ */
+.hobby-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.hobby-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  background: var(--line);
+}
+
+.hobby-icon {
+  font-size: 1.4rem;
+}
+
+/* ============ 4. 个人项目 ============ */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.project-card {
+  background: var(--line);
+}
+
+.project-cover {
+  aspect-ratio: 16 / 10; /* 锁 16:10 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.project-cover--1 { background: var(--grad-cover-1); }
+.project-cover--2 { background: var(--grad-cover-2); }
+
+.project-name {
+  font-size: 1.1rem;
+  margin: 14px 16px 6px;
+}
+
+.project-desc {
+  color: var(--text-muted);
+  margin: 0 16px 16px;
+  font-size: 0.95rem;
+}
+
+/* ============ 6. 联系我 ============ */
+.contact-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  background: var(--line);
+}
+
+.contact-icon {
+  font-size: 1.2rem;
+}
+
+/* ============ 5. 数字分身（静态占位） ============ */
+.digital-twin-placeholder {
+  padding: 48px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  border: 1px dashed var(--line);
+}
+
+/* ============ Footer ============ */
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: 24px 0;
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 0.9rem;
+}
