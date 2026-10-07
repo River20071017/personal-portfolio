@@ -8,16 +8,18 @@
 :root {
   /* 占位渐变色值，V2 再精调 */
   --grad-avatar: linear-gradient(135deg, #6366f1, #a855f7);
-  --grad-cover-1: linear-gradient(135deg, #0ea5e9, #14b8a6);
-  --grad-cover-2: linear-gradient(135deg, #f59e0b, #ef4444);
+  --grad-cover-1: linear-gradient(135deg, rgba(99, 102, 241, 0.35), rgba(168, 85, 247, 0.25));
+  --grad-cover-2: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(239, 68, 68, 0.3));
 
-  --bg: #0b1020;
-  --bg-spot-1: rgba(99, 102, 241, 0.25);
-  --bg-spot-2: rgba(168, 85, 247, 0.2);
+  /* 深色背景（适配铺满的暗调底图） */
+  --bg: #0b0f1a;
+  --bg-spot-1: rgba(184, 169, 232, 0.5);
+  --bg-spot-2: rgba(184, 212, 240, 0.5);
 
-  --text: #e5e7eb;
-  --text-muted: #9ca3af;
-  --line: #1f2937;
+  /* 浅色文字，保证在深色图上的可读性 */
+  --text: #eef1f6;
+  --text-muted: #a9b2c3;
+  --line: rgba(255, 255, 255, 0.12);
 
   /* 导航留位高度 */
   --header-h: 64px;
@@ -38,19 +40,12 @@ body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--text);
   background-color: var(--bg);
+  /* 背景：整张图铺满宽度、随页面滚动展示，不裁剪 */
+  background-image: url("assets/img/background.jpg");
+  background-size: 100% auto;
+  background-position: top center;
+  background-repeat: no-repeat;
   line-height: 1.6;
-}
-
-/* 背景：CSS 渐变 + blur 光斑（固定于一层的装饰，不参与交互） */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(600px 400px at 15% 20%, var(--bg-spot-1), transparent 70%),
-    radial-gradient(500px 420px at 85% 75%, var(--bg-spot-2), transparent 70%);
-  filter: blur(60px);
 }
 
 a {
@@ -71,8 +66,7 @@ a {
   top: 0;
   z-index: 10;
   height: var(--header-h);
-  background: rgba(11, 16, 32, 0.9);
-  border-bottom: 1px solid var(--line);
+  background: transparent;
 }
 
 .nav {
@@ -133,11 +127,29 @@ a {
 
 /* ============ 1. Hero（居中对称：顶部标签 → 大标题 → 描述） ============ */
 .hero {
+  position: relative;
   padding: 120px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  background-image: url("assets/img/hero-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+}
+
+/* 暗色遮罩：径向渐变，中心加深以压住火把高光，四周渐弱保留氛围 */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(8, 18, 35, 0.7) 0%, rgba(8, 18, 35, 0.46) 55%, rgba(8, 18, 35, 0.22) 100%);
+}
+
+.hero .container {
+  position: relative;
+  z-index: 1;
 }
 
 .avatar {
@@ -154,7 +166,7 @@ a {
 }
 
 .hero-kicker {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.8);
   margin-bottom: 16px;
 }
 
@@ -165,29 +177,29 @@ a {
 }
 
 .hero-nickname {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.8);
   margin-bottom: 20px;
 }
 
 .hero-subtitle {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.9);
   max-width: 560px;
 }
 
 .hero-tags {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.8);
   max-width: 560px;
   margin-top: 16px;
 }
 
 .hero-status {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.8);
   max-width: 560px;
   margin-top: 8px;
 }
 
 .hero-body {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.85);
   max-width: 560px;
   margin-top: 24px;
 }
