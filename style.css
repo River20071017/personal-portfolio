@@ -76,9 +76,9 @@ a {
 }
 
 .nav {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  justify-content: space-between;
   height: 100%;
 }
 
@@ -91,6 +91,7 @@ a {
   display: flex;
   gap: 20px;
   list-style: none;
+  justify-self: center;
 }
 
 .nav-list a {
@@ -113,9 +114,30 @@ a {
   max-width: 640px;
 }
 
-/* ============ 1. Hero ============ */
+/* ============ 左右分栏：左文右图 ============ */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.split-text {
+  min-width: 0;
+}
+
+.split-media {
+  aspect-ratio: 4 / 3;
+  background: var(--grad-cover-1);
+}
+
+/* ============ 1. Hero（居中对称：顶部标签 → 大标题 → 描述） ============ */
 .hero {
-  padding: 96px 0;
+  padding: 120px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .avatar {
@@ -128,75 +150,103 @@ a {
   justify-content: center;
   font-size: 2rem;
   color: #fff;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .hero-kicker {
   color: var(--text-muted);
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 }
 
 .hero-name {
-  font-size: 2.4rem;
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  line-height: 1.05;
   margin-bottom: 8px;
+}
+
+.hero-nickname {
+  color: var(--text-muted);
+  margin-bottom: 20px;
 }
 
 .hero-subtitle {
   color: var(--text-muted);
+  max-width: 560px;
+}
+
+.hero-tags {
+  color: var(--text-muted);
+  max-width: 560px;
+  margin-top: 16px;
+}
+
+.hero-status {
+  color: var(--text-muted);
+  max-width: 560px;
+  margin-top: 8px;
+}
+
+.hero-body {
+  color: var(--text-muted);
+  max-width: 560px;
+  margin-top: 24px;
 }
 
 /* ============ 3. 兴趣爱好 ============ */
 .hobby-list {
   list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 16px;
 }
 
 .hobby-item {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-start;
+  gap: 12px;
   padding: 14px;
   background: var(--line);
 }
 
 .hobby-icon {
   font-size: 1.4rem;
+  line-height: 1.4;
+}
+
+.hobby-info strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.hobby-detail {
+  list-style: none;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.hobby-detail li + li {
+  margin-top: 4px;
 }
 
 /* ============ 4. 个人项目 ============ */
-.project-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+.project-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.project-card {
-  background: var(--line);
-}
-
-.project-cover {
-  aspect-ratio: 16 / 10; /* 锁 16:10 */
+.project-list li {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 1.1rem;
+  gap: 10px;
 }
 
-.project-cover--1 { background: var(--grad-cover-1); }
-.project-cover--2 { background: var(--grad-cover-2); }
-
-.project-name {
-  font-size: 1.1rem;
-  margin: 14px 16px 6px;
-}
-
-.project-desc {
-  color: var(--text-muted);
-  margin: 0 16px 16px;
-  font-size: 0.95rem;
+.project-list li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--text-muted);
 }
 
 /* ============ 6. 联系我 ============ */
@@ -217,6 +267,12 @@ a {
 
 .contact-icon {
   font-size: 1.2rem;
+}
+
+.contact-note {
+  color: var(--text-muted);
+  margin-top: 16px;
+  font-size: 0.95rem;
 }
 
 /* ============ 5. 数字分身（静态占位） ============ */
