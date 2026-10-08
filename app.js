@@ -321,21 +321,6 @@ if (heroEl && heroLight) {
   })();
 }
 
-// ============ 磁吸按钮：鼠标靠近时按钮向鼠标方向轻微吸附，离开后回弹 ============
-const magneticBtn = document.querySelector('.nav-feedback');
-if (magneticBtn) {
-  const strength = 0.35; // 吸附强度：偏移 = 按钮中心到鼠标距离的 35%
-  magneticBtn.addEventListener('mousemove', (e) => {
-    const r = magneticBtn.getBoundingClientRect();
-    const dx = e.clientX - (r.left + r.width / 2);
-    const dy = e.clientY - (r.top + r.height / 2);
-    magneticBtn.style.transform = `translate(${dx * strength}px, ${dy * strength}px)`;
-  });
-  magneticBtn.addEventListener('mouseleave', () => {
-    magneticBtn.style.transform = 'translate(0, 0)';
-  });
-}
-
 // ============ 兴趣爱好卡片 3D 倾斜：朝鼠标方向倾斜（最大 12 度），内容浮于表面，离开缓弹 ============
 const carTrack = document.getElementById('carTrack');
 if (carTrack) {
@@ -359,3 +344,106 @@ if (carTrack) {
     }
   });
 }
+
+// ============ 陶喆图：点击播放/暂停歌曲 ============
+// 注意：轮播为实现无缝循环会克隆「听歌卡」，DOM 里存在两张 .car-fig--audio。
+// 因此用事件委托，而不是 querySelector 绑定到单一节点，否则点真卡会没反应。
+const taozheAudio = document.getElementById('taozheAudio');
+
+function renderPlayState(playing) {
+  document.querySelectorAll('.car-fig--audio').forEach((fig) => {
+    const icon = fig.querySelector('.audio-play');
+    if (icon) icon.textContent = playing ? '⏸' : '▶';
+    fig.classList.toggle('is-playing', playing);
+  });
+}
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.car-fig--audio')) return;
+  if (taozheAudio.paused) {
+    taozheAudio.play().catch((err) => {
+      console.error('音频播放失败：', err);
+      alert('无法播放歌曲：\n' + (err && err.message ? err.message : err));
+    });
+  } else {
+    taozheAudio.pause();
+  }
+});
+
+// ---- 播放进度条：左上角浮动，播放时显示，可拖动跳转 ----
+const audioBar = document.getElementById('audioBar');
+const abTrack = document.getElementById('abTrack');
+const abFill = document.getElementById('abFill');
+const abThumb = document.getElementById('abThumb');
+const abCur = document.getElementById('abCur');
+const abDur = document.getElementById('abDur');
+
+function fmtTime(sec) {
+  if (!isFinite(sec)) return '0:00';
+  sec = Math.max(0, Math.floor(sec));
+  return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
+}
+
+function updateBar() {
+  const dur = taozheAudio.duration || 0;
+  const cur = taozheAudio.currentTime || 0;
+  const ratio = dur ? cur / dur : 0;
+  abFill.style.width = (ratio * 100) + '%';
+  abThumb.style.left = (ratio * 100) + '%';
+  abCur.textContent = fmtTime(cur);
+}
+
+function showBar() { audioBar.hidden = false; }
+function hideBar() { audioBar.hidden = true; }
+
+taozheAudio.addEventListener('play', () => { renderPlayState(true); showBar(); });
+taozheAudio.addEventListener('pause', () => { renderPlayState(false); hideBar(); });
+taozheAudio.addEventListener('ended', () => { renderPlayState(false); hideBar(); });
+taozheAudio.addEventListener('loadedmetadata', () => {
+  abDur.textContent = fmtTime(taozheAudio.duration);
+  updateBar();
+});
+taozheAudio.addEventListener('timeupdate', updateBar);
+
+// 拖动进度条跳转
+let dragId = null;
+function seekAt(clientX) {
+  const rect = abTrack.getBoundingClientRect();
+  let ratio = (clientX - rect.left) / rect.width;
+  ratio = Math.max(0, Math.min(1, ratio));
+  if (taozheAudio.duration) taozheAudio.currentTime = ratio * taozheAudio.duration;
+  updateBar();
+}
+abTrack.addEventListener('pointerdown', (e) => {
+  dragId = e.pointerId;
+  abTrack.setPointerCapture(e.pointerId);
+  seekAt(e.clientX);
+});
+abTrack.addEventListener('pointermove', (e) => {
+  if (dragId === e.pointerId) seekAt(e.clientX);
+});
+abTrack.addEventListener('pointerup', (e) => {
+  if (dragId === e.pointerId) {
+    dragId = null;
+    abTrack.releasePointerCapture(e.pointerId);
+  }
+});
+abTrack.addEventListener('pointercancel', (e) => {
+  if (dragId === e.pointerId) dragId = null;
+});
+
+// 捕获文件加载/解码失败，直接弹窗告知原因
+taozheAudio.addEventListener('error', () => {
+  renderPlayState(false);
+  hideBar();
+  const e = taozheAudio.error;
+  const msgs = {
+    1: '加载被中止',
+    2: '网络/文件读取错误',
+    3: '文件已损坏，无法解码',
+    4: '浏览器不支持此音频格式'
+  };
+  const msg = e && msgs[e.code] ? msgs[e.code] : ('未知错误 code=' + (e && e.code));
+  console.error('音频 error：', e);
+  alert('无法播放歌曲：' + msg);
+});

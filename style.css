@@ -63,7 +63,7 @@ a {
               border-radius 0.35s ease, background-color 0.35s ease;
 }
 
-/* 一开始滚动即：与顶部/侧边分离，成为固定的毛玻璃气泡框（暖白奶油色，贴合参考图） */
+/* 一开始滚动即：与顶部/侧边分离，成为固定的毛玻璃气泡框（纯白） */
 .site-header.is-scrolled {
   top: 16px;
   left: 0;
@@ -72,8 +72,8 @@ a {
   width: calc(100% - 32px);
   max-width: 1200px;
   height: calc(var(--header-h) - 12px);
-  border-radius: 999px;
-  background-color: rgba(253, 248, 243, 0.42);
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.42);
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02),
@@ -245,20 +245,19 @@ a {
   margin-left: clamp(24px, 5vw, 80px);
 }
 
-/* 卡片区两栏：左列自述介绍（窄），右列个人标签 + 当前状态（宽），整体匀称 */
+/* 卡片区：上下两行 —— 上排「当前状态 + 个人标签」两卡并排，下排「自述介绍」通栏 */
 .hero-cards {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  display: flex;
+  flex-direction: column;
   gap: 16px;
   width: 100%;
   max-width: 720px;
   margin-top: 48px;
-  align-items: stretch;
 }
 
-.hero-cards-right {
-  display: flex;
-  flex-direction: column;
+.hero-cards-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
 
@@ -292,6 +291,33 @@ a {
 .hobby-section {
   padding-top: 40px;
   padding-bottom: 140px;
+}
+
+/* 兴趣爱好结尾分界线：横贯的细渐变光带 + 居中菱形节点，科幻而低调 */
+.hobby-divider {
+  position: relative;
+  width: min(760px, 82%);
+  height: 1px;
+  margin: 72px auto 0;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(120, 180, 255, 0.35) 30%,
+    rgba(167, 139, 250, 0.42) 50%,
+    rgba(120, 180, 255, 0.35) 70%,
+    transparent);
+}
+
+.hobby-divider::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: #c4b5fd;
+  box-shadow: 0 0 6px rgba(196, 181, 253, 0.9),
+              0 0 14px rgba(34, 211, 238, 0.55);
 }
 
 /* My hobbies 大标题：手写体 + 白色渐变填充 */
@@ -386,6 +412,13 @@ a {
 .car-card--lavender {
   min-height: 450px;
   background: linear-gradient(160deg, #c4b5fd 0%, #a78bfa 60%, transparent 100%);
+  /* 与足球卡同源修复：关闭 preserve-3d，否则 3D 倾斜会干扰 hover/click 命中 */
+  transform-style: flat;
+}
+
+/* 无 preserve-3d 后 translateZ 失效，厚度伪元素会变成覆盖卡片的暗层，故隐藏 */
+.car-card--lavender::before {
+  display: none;
 }
 
 .car-card--peach {
@@ -405,9 +438,15 @@ a {
 
 .car-detail {
   list-style: none;
-  font-size: 1.05rem;
+  font-size: 2.2rem;
   color: #5b5b5b;
   max-width: 560px;
+  margin: 0 auto;          /* 水平居中 */
+  flex: 1;                 /* 撑满卡片剩余高度，避免显得空 */
+  display: flex;
+  align-items: center;     /* 垂直居中 */
+  justify-content: center;
+  text-align: center;
 }
 
 .car-detail li + li {
@@ -552,6 +591,131 @@ a {
   left: 130%;
 }
 
+/* 陶喆图：点击播放歌曲，叠加半透明圆钮（▶/⏸） */
+.car-fig--audio {
+  cursor: pointer;
+}
+
+.audio-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(12, 18, 36, 0.55);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, background 0.2s ease;
+  pointer-events: none; /* 点击交给 figure 处理，避免重复触发 */
+}
+
+.car-fig--audio:hover .audio-play {
+  transform: translate(-50%, -50%) scale(1.08);
+  background: rgba(12, 18, 36, 0.72);
+}
+
+/* ---- 播放进度条：左上角浮动，播放时显示，可拖动跳转 ---- */
+.audio-bar {
+  position: fixed;
+  top: 88px;
+  left: 20px;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(12, 18, 36, 0.78);
+  backdrop-filter: blur(10px) saturate(160%);
+  -webkit-backdrop-filter: blur(10px) saturate(160%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  color: #eef1f6;
+  min-width: 260px;
+  max-width: 360px;
+}
+
+.audio-bar[hidden] {
+  display: none;
+}
+
+.ab-title {
+  font-size: 0.85rem;
+  color: #cdd6e4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ab-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ab-time {
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: #a9b2c3;
+  min-width: 34px;
+  text-align: center;
+}
+
+.ab-track {
+  position: relative;
+  flex: 1;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.ab-track::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.ab-fill {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 4px;
+  border-radius: 999px;
+  width: 0;
+  background: linear-gradient(90deg, #a78bfa, #22d3ee);
+  pointer-events: none;
+}
+
+.ab-thumb {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(167, 139, 250, 0.9);
+  pointer-events: none;
+}
+
 .car-foot-body {
   margin-top: 14px;
 }
@@ -569,7 +733,7 @@ a {
 
 .car-item-note {
   font-size: 0.9rem;
-  color: #5b5b5b;
+  color: #fff;
 }
 
 /* 圆形箭头：骑缝悬浮在两张卡交界处 */
@@ -683,8 +847,7 @@ a {
   text-decoration: none;
   border: none;
   cursor: pointer;
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease;
-  will-change: transform;
+  transition: background-color 0.2s ease;
 }
 
 .nav-feedback:hover {
@@ -808,7 +971,6 @@ a {
   border-color: rgba(255, 255, 255, 0.9);
   background: rgba(200, 50, 50, 0.15);
   box-shadow: 0 0 20px rgba(220, 60, 60, 0.4);
-  transform: translateY(-3px);
 }
 
 /* 精准百分比定位：左手食指指尖上方（向上抬高 9%） */

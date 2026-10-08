@@ -43,22 +43,22 @@
         <!-- 昵称作为大标题，位于中上靠左 -->
         <h1 class="hero-name">Yangtze</h1>
         <!-- 专业/年级作为副标题 -->
-        <p class="hero-subtitle">计算机科学与技术 大一</p>
+        <p class="hero-subtitle">· 长江不睡觉，我也不睡。</p>
         <!-- 左：自述介绍（hero 正文）单独成卡；右：个人标签 + 当前状态 两卡堆叠 -->
         <div class="hero-cards">
-          <div class="hero-glass">
-            <p class="hero-glass-label">自述介绍</p>
-            <p class="hero-glass-text">我喜欢梦，喜欢研究梦，以前我擅长做梦，也擅长把梦拖到明天；现在我想学会把梦落实到生活中的点点滴滴。</p>
-          </div>
-          <div class="hero-cards-right">
-            <div class="hero-glass">
-              <p class="hero-glass-label">个人标签</p>
-              <p class="hero-glass-text">足球高手，夜猫子，陶喆歌迷，拖延症晚期</p>
-            </div>
+          <div class="hero-cards-top">
             <div class="hero-glass">
               <p class="hero-glass-label">当前状态</p>
               <p class="hero-glass-text">学习python中，努力适应全英授课中</p>
             </div>
+            <div class="hero-glass">
+              <p class="hero-glass-label">个人标签</p>
+              <p class="hero-glass-text">足球高手，夜猫子，陶喆歌迷，拖延症晚期</p>
+            </div>
+          </div>
+          <div class="hero-glass">
+            <p class="hero-glass-label">自述介绍</p>
+            <p class="hero-glass-text">计算机科学与技术专业大一学生。目前在学习 Python 与数据结构基础，适应全英文授课环境，白天在梦里，晚上在终端里。课余热爱踢足球，球场里是高手，代码里是新手。希望在实践中积累经验，稳步提升专业能力。目前主修两门课：Python，以及在全英授课里努力听懂每一个单词。</p>
           </div>
         </div>
       </div>
@@ -74,8 +74,7 @@
       <div class="carousel" id="hobbyCarousel">
         <div class="car-track" id="carTrack">
           <div class="car-card car-card--peach">
-            <span class="car-icon" aria-hidden="true">🏀</span>
-            <h3 class="car-title">篮球</h3>
+            <h3 class="car-title car-title--script">basketball</h3>
             <p class="car-detail">沉淀中......</p>
           </div>
           <div class="car-card car-card--mint">
@@ -98,22 +97,41 @@
                 </figure>
                 <div class="car-foot-body">
                   <p class="car-item-name">Messi</p>
-                  <p class="car-item-note">great of all time</p>
+                  <p class="car-item-note">greatest of all time</p>
                 </div>
               </div>
             </div>
           </div>
           <div class="car-card car-card--lavender">
-            <span class="car-icon" aria-hidden="true">🎵</span>
-            <h3 class="car-title">听歌</h3>
-            <p class="car-detail">陶喆yyds，赵雷的忠实歌迷，R&B鉴赏家</p>
-            <p class="car-note">（音乐是解锁回忆的钥匙）</p>
+            <h3 class="car-title car-title--script">music</h3>
+            <div class="car-foot">
+              <div class="car-foot-col">
+                <figure class="car-fig car-fig--audio">
+                  <img class="car-foot-img" src="assets/img/taozhe.jpg" alt="陶喆" loading="lazy" />
+                  <span class="audio-play" aria-hidden="true">▶</span>
+                </figure>
+                <div class="car-foot-body">
+                  <p class="car-item-name">陶喆</p>
+                  <p class="car-item-note">R&B教父</p>
+                </div>
+              </div>
+              <div class="car-foot-col">
+                <figure class="car-fig">
+                  <img class="car-foot-img" src="assets/img/zhaolei.jpg" alt="赵雷" loading="lazy" />
+                </figure>
+                <div class="car-foot-body">
+                  <p class="car-item-name">赵雷</p>
+                  <p class="car-item-note">无法长大</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <button class="car-arrow car-arrow--prev" id="carPrev" type="button" aria-label="上一张">‹</button>
         <button class="car-arrow car-arrow--next" id="carNext" type="button" aria-label="下一张">›</button>
       </div>
       <div class="car-dots" id="carDots" role="tablist" aria-label="轮播页码"></div>
+      <div class="hobby-divider" aria-hidden="true"></div>
     </section>
 
     <!-- ============ 3. 个人项目（左文右图） ============ -->
@@ -176,6 +194,20 @@
     </div>
   </footer>
 
+  <audio id="taozheAudio" src="assets/audio/taozhe-beach.mp3" preload="none"></audio>
+
+  <!-- 播放进度：左上角浮动，仅在播放时显示，可拖动跳转 -->
+  <div class="audio-bar" id="audioBar" hidden>
+    <span class="ab-title">陶喆 · 沙滩 + Somewhere Over The Rainbow</span>
+    <div class="ab-row">
+      <span class="ab-time" id="abCur">0:00</span>
+      <div class="ab-track" id="abTrack">
+        <div class="ab-fill" id="abFill"></div>
+        <div class="ab-thumb" id="abThumb"></div>
+      </div>
+      <span class="ab-time" id="abDur">0:00</span>
+    </div>
+  </div>
   <script src="app.js"></script>
 </body>
 </html>
