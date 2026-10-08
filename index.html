@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>杨子江 · 个人主页</title>
   <!-- 文案均来自 content.md -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -12,6 +15,7 @@
   <!-- ============ Entry Gate（覆盖层/幕布） ============ -->
   <div class="entry-gate" id="entryGate">
     <div class="gate-overlay"></div>
+    <p class="gate-welcome">¡Bienvenido!</p>
     <button class="gate-btn btn-left" id="gateBtnLeft" type="button">Enter</button>
     <button class="gate-btn btn-right" id="gateBtnRight" type="button">Enter</button>
   </div>
@@ -48,46 +52,38 @@
       </div>
     </section>
 
-    <!-- ============ 2. 兴趣爱好（左文右图） ============ -->
-    <section class="section" id="hobbies">
-      <div class="container split">
-        <div class="split-text">
-          <h2 class="section-title">兴趣爱好</h2>
-          <ul class="hobby-list">
-            <li class="hobby-item">
-              <span class="hobby-icon" aria-hidden="true">⚽</span>
-              <div class="hobby-info">
-                <strong>足球</strong>
-                <ul class="hobby-detail">
-                  <li>Messi</li>
-                  <li>主队Manchester City</li>
-                  <li>曼彻斯特的天空是蓝色的</li>
-                </ul>
-              </div>
-            </li>
-            <li class="hobby-item">
-              <span class="hobby-icon" aria-hidden="true">🎵</span>
-              <div class="hobby-info">
-                <strong>听歌</strong>
-                <ul class="hobby-detail">
-                  <li>陶喆yyds，赵雷的忠实歌迷，R&B鉴赏家</li>
-                  <li>（音乐是解锁回忆的钥匙）</li>
-                </ul>
-              </div>
-            </li>
-            <li class="hobby-item">
-              <span class="hobby-icon" aria-hidden="true">🏀</span>
-              <div class="hobby-info">
-                <strong>篮球</strong>
-                <ul class="hobby-detail">
-                  <li>沉淀中......</li>
-                </ul>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="split-media" aria-hidden="true"></div>
+    <!-- ============ 2. 兴趣爱好（中央聚焦轮播） ============ -->
+    <section class="section hobby-section" id="hobbies">
+      <div class="container">
+        <h2 class="hobby-heading"><span id="hobbyType" aria-label="My hobbies"></span><span class="type-caret" aria-hidden="true"></span></h2>
       </div>
+      <div class="carousel" id="hobbyCarousel">
+        <div class="car-track" id="carTrack">
+          <div class="car-card car-card--peach">
+            <span class="car-icon" aria-hidden="true">🏀</span>
+            <h3 class="car-title">篮球</h3>
+            <p class="car-detail">沉淀中......</p>
+          </div>
+          <div class="car-card car-card--mint">
+            <span class="car-icon" aria-hidden="true">⚽</span>
+            <h3 class="car-title">足球</h3>
+            <ul class="car-detail">
+              <li>Messi</li>
+              <li>主队Manchester City</li>
+              <li>曼彻斯特的天空是蓝色的</li>
+            </ul>
+          </div>
+          <div class="car-card car-card--lavender">
+            <span class="car-icon" aria-hidden="true">🎵</span>
+            <h3 class="car-title">听歌</h3>
+            <p class="car-detail">陶喆yyds，赵雷的忠实歌迷，R&B鉴赏家</p>
+            <p class="car-note">（音乐是解锁回忆的钥匙）</p>
+          </div>
+        </div>
+        <button class="car-arrow car-arrow--prev" id="carPrev" type="button" aria-label="上一张">‹</button>
+        <button class="car-arrow car-arrow--next" id="carNext" type="button" aria-label="下一张">›</button>
+      </div>
+      <div class="car-dots" id="carDots" role="tablist" aria-label="轮播页码"></div>
     </section>
 
     <!-- ============ 3. 个人项目（左文右图） ============ -->
@@ -106,14 +102,11 @@
       </div>
     </section>
 
-    <!-- ============ 4. 数字分身（仅静态占位，左文右图） ============ -->
+    <!-- ============ 4. 数字分身（敬请期待） ============ -->
     <section class="section" id="digital-twin">
-      <div class="container split">
-        <div class="split-text">
-          <h2 class="section-title">数字分身</h2>
-          <div class="digital-twin-placeholder"></div>
-        </div>
-        <div class="split-media" aria-hidden="true"></div>
+      <div class="container digital-twin">
+        <h2 class="digital-twin-title">数字分身</h2>
+        <p class="digital-twin-coming">敬请期待！</p>
       </div>
     </section>
 

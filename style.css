@@ -31,11 +31,6 @@
   box-sizing: border-box;
 }
 
-html {
-  /* 锚点跳转时避开 sticky 导航 */
-  scroll-padding-top: var(--header-h);
-}
-
 body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--text);
@@ -79,7 +74,7 @@ a {
   max-width: 1200px;
   height: calc(var(--header-h) - 12px);
   border-radius: 999px;
-  background-color: rgba(253, 248, 243, 0.62);
+  background-color: rgba(253, 248, 243, 0.42);
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02),
@@ -88,7 +83,7 @@ a {
 }
 
 .site-header.is-scrolled .nav-list {
-  gap: 26px;
+  gap: 36px;
 }
 
 /* 奶油白底上，导航文字切换为深色以保证可读 */
@@ -125,7 +120,7 @@ a {
 
 .nav-list {
   display: flex;
-  gap: 36px;
+  gap: 48px;
   list-style: none;
   justify-self: center;
 }
@@ -253,40 +248,165 @@ a {
   margin-top: 24px;
 }
 
-/* ============ 3. 兴趣爱好 ============ */
-.hobby-list {
-  list-style: none;
+/* ============ 2. 兴趣爱好（中央聚焦轮播） ============ */
+.hobby-section {
+  padding-top: 96px;
+  padding-bottom: 140px;
+}
+
+/* My hobbies 大标题：手写体 + 白色渐变填充 */
+.hobby-heading {
+  text-align: center;
+  font-family: 'Kaushan Script', cursive;
+  font-size: 3.6rem;
+  line-height: 1.1;
+  margin-bottom: 40px;
+  background: linear-gradient(135deg, #ffffff 0%, #d6dcff 45%, #ffffff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 打字机光标 */
+.type-caret {
+  display: inline-block;
+  width: 3px;
+  height: 2.4rem;
+  margin-left: 8px;
+  vertical-align: -0.35rem;
+  border-radius: 2px;
+  background: #ffffff;
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+  50% { opacity: 0; }
+}
+
+.carousel {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.car-track {
+  display: flex;
+  gap: 32px;
+  align-items: flex-end; /* 底部对齐，顶部错落有致 */
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.car-card {
+  flex: 0 0 auto;
+  width: 640px; /* JS 按视口 68% 覆盖 */
+  border-radius: 20px;
+  padding: 56px 48px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
+  color: #2d2d2d;
+  transition: transform 0.35s ease;
 }
 
-.hobby-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 14px;
-  background: var(--line);
+.car-card:hover {
+  transform: translateY(-8px);
 }
 
-.hobby-icon {
-  font-size: 1.4rem;
-  line-height: 1.4;
+/* 三块渐变：统一走蓝紫同族色（呼应头像与站点主色），低饱和偏粉彩更柔和；
+   从主题色向下渐到透明，底部融入页面背景；圆角 20px
+   高度错落：靛蓝(足球)高 / 紫罗兰(音乐)中 / 天蓝(篮球)矮 */
+.car-card--mint {
+  min-height: 500px;
+  background: linear-gradient(160deg, #a5b4fc 0%, #818cf8 60%, transparent 100%);
 }
 
-.hobby-info strong {
-  display: block;
-  margin-bottom: 4px;
+.car-card--lavender {
+  min-height: 450px;
+  background: linear-gradient(160deg, #c4b5fd 0%, #a78bfa 60%, transparent 100%);
 }
 
-.hobby-detail {
+.car-card--peach {
+  min-height: 400px;
+  background: linear-gradient(160deg, #93c5fd 0%, #60a5fa 60%, transparent 100%);
+}
+
+.car-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.car-title {
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.car-detail {
   list-style: none;
-  color: var(--text-muted);
-  font-size: 0.95rem;
+  font-size: 1.05rem;
+  color: #5b5b5b;
+  max-width: 560px;
 }
 
-.hobby-detail li + li {
-  margin-top: 4px;
+.car-detail li + li {
+  margin-top: 6px;
+}
+
+.car-note {
+  font-size: 0.92rem;
+  color: #8a8a8a;
+}
+
+/* 圆形箭头：骑缝悬浮在两张卡交界处 */
+.car-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: #2d3a4a;
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+  transition: background-color 0.2s ease;
+}
+
+.car-arrow:hover {
+  background: #3c4c61;
+}
+
+/* 分页指示器：底部圆点，当前页拉伸为胶囊 */
+.car-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 44px;
+}
+
+.car-dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
+  cursor: pointer;
+  transition: width 0.35s ease, background-color 0.35s ease;
+}
+
+.car-dot.is-active {
+  width: 30px;
+  background: var(--text);
 }
 
 /* ============ 4. 个人项目 ============ */
@@ -381,12 +501,20 @@ a {
   align-self: flex-start;
 }
 
-/* ============ 5. 数字分身（静态占位） ============ */
-.digital-twin-placeholder {
-  padding: 48px 20px;
+/* ============ 5. 数字分身（敬请期待） ============ */
+.digital-twin {
   text-align: center;
+}
+
+.digital-twin-title {
+  font-size: 3.6rem;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+.digital-twin-coming {
+  font-size: 1.5rem;
   color: var(--text-muted);
-  border: 1px dashed var(--line);
 }
 
 /* ============ Footer ============ */
@@ -424,6 +552,21 @@ a {
   inset: 0;
   background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.5) 100%);
   z-index: 1;
+  pointer-events: none;
+}
+
+/* 幕布顶部的西语欢迎语 */
+.gate-welcome {
+  position: absolute;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  margin: 0;
+  font-family: 'Kaushan Script', cursive;
+  font-size: 2.4rem;
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
   pointer-events: none;
 }
 
