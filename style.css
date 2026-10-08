@@ -33,7 +33,6 @@
 body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--text);
-  background-color: var(--bg);
   line-height: 1.6;
 }
 
@@ -133,6 +132,31 @@ a {
 .section {
   scroll-margin-top: var(--header-h); /* 为导航留位 */
   padding: 112px 0;
+}
+
+/* 靛蓝背景：全局底色已删除，按区块单独添加 */
+#hobbies,
+#contact,
+#digital-twin {
+  background-color: var(--bg);
+}
+
+/* 个人项目：用实景照片作背景，占约 1.4 屏并垂直居中 */
+#projects {
+  background: url("assets/img/projects-bg.jpg") center / cover no-repeat;
+  min-height: 140vh;
+  display: flex;
+  align-items: center;
+}
+
+/* Hero 首屏：靛蓝作底色，填补背景图未覆盖的空白部分 */
+.hero {
+  background-color: var(--bg);
+}
+
+/* 内容最底层铺靛蓝：Hero 滚动裁切时露出的边缘、区块间的间隙都是靛蓝 */
+main {
+  background-color: var(--bg);
 }
 
 .section-title {
