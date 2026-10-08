@@ -28,11 +28,9 @@
 
 足球：
 
-&#x09;Messi
+&#x09;Manchester City（曼彻斯特的天空是蓝色的 🐶，配曼城照片）
 
-&#x09;主队Manchester City
-
-&#x09;曼彻斯特的天空是蓝色的
+&#x09;Messi —— great of all time（配梅西照片）
 
 听歌：陶喆yyds，赵雷的忠实歌迷，R\&B鉴赏家
 

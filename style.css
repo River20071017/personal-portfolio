@@ -364,6 +364,7 @@ a {
   border-radius: inherit;
   background: rgba(16, 22, 44, 0.55);
   transform: translateZ(-16px);
+  pointer-events: none; /* 厚度层只做视觉，不拦截 hover，否则图片上的文字浮现/光带无法触发 */
 }
 
 /* 三块渐变：统一走蓝紫同族色（呼应头像与站点主色），低饱和偏粉彩更柔和；
@@ -372,6 +373,14 @@ a {
 .car-card--mint {
   min-height: 500px;
   background: linear-gradient(160deg, #a5b4fc 0%, #818cf8 60%, transparent 100%);
+  /* 足球卡内有溢出裁剪的图片特效层，preserve-3d 会破坏它们的 hit-testing
+     导致 :hover 无法触发；此卡关闭 preserve-3d，改用普通 3D 倾斜 */
+  transform-style: flat;
+}
+
+/* 无 preserve-3d 后 translateZ 失效，厚度伪元素会变成覆盖卡片的暗层，故隐藏 */
+.car-card--mint::before {
+  display: none;
 }
 
 .car-card--lavender {
@@ -408,6 +417,159 @@ a {
 .car-note {
   font-size: 0.92rem;
   color: #8a8a8a;
+}
+
+/* 足球卡标题：连笔手写体 */
+.car-title--script {
+  font-family: 'Kaushan Script', cursive;
+  font-size: 2.6rem;
+  line-height: 1.2;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+/* 足球卡：两图并排、图片放大、文字在底下 */
+.car-foot {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  flex: 1;
+}
+
+.car-foot-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.car-foot-img {
+  display: block;
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+}
+
+/* 图片容器：圆角裁剪 + 投影，特效层都在其内部 */
+.car-fig {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  line-height: 0;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+}
+
+/* ---- 曼城：hover 放大 8% + 暗角 + 底部渐变遮罩 + 名称从下方滑入 ---- */
+.car-fig--zoom .car-foot-img {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.car-fig--zoom:hover .car-foot-img {
+  transform: scale(1.08);
+}
+
+.car-fig-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 48%, rgba(0, 0, 0, 0.55) 100%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.car-fig--zoom:hover .car-fig-vignette {
+  opacity: 1;
+}
+
+.car-fig-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 65%);
+  opacity: 0;
+  transform: translateY(25%);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+
+.car-fig--zoom:hover .car-fig-shade {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.car-fig-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 18px 18px 16px;
+  color: #fff;
+  z-index: 3;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  line-height: 1.3;
+  pointer-events: none;
+}
+
+.car-fig--zoom:hover .car-fig-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.car-fig-name {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.car-fig-note {
+  display: block;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* ---- 梅西：sheen 斜向光带扫过，像金属反光 ---- */
+.car-fig--sheen::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -60%;
+  width: 45%;
+  height: 140%;
+  background: linear-gradient(105deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.22) 40%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.22) 60%,
+    rgba(255, 255, 255, 0) 100%);
+  transform: skewX(-18deg);
+  transition: left 0.7s ease;
+  pointer-events: none;
+}
+
+.car-fig--sheen:hover::after {
+  left: 130%;
+}
+
+.car-foot-body {
+  margin-top: 14px;
+}
+
+.car-item-label {
+  font-size: 0.8rem;
+  color: #6b6b6b;
+}
+
+.car-item-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.car-item-note {
+  font-size: 0.9rem;
+  color: #5b5b5b;
 }
 
 /* 圆形箭头：骑缝悬浮在两张卡交界处 */
