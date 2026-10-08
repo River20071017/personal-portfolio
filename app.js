@@ -206,3 +206,117 @@ if (hobbyType) {
     typeOnce();
   }
 }
+
+// ============ Hero 流动光晕：canvas 光尘粒子，像水/沙一样向四周荡开、消散 ============
+const heroEl = document.getElementById('hero');
+const heroLight = document.getElementById('heroLight');
+if (heroEl && heroLight) {
+  const ctx = heroLight.getContext('2d');
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let W = 0, H = 0;
+
+  function resize() {
+    W = heroEl.clientWidth;
+    H = heroEl.clientHeight;
+    heroLight.width = W * dpr;
+    heroLight.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // 预渲染一颗柔光「光点」精灵，粒子批量 drawImage 省性能
+  const sprite = document.createElement('canvas');
+  sprite.width = sprite.height = 128;
+  const sctx = sprite.getContext('2d');
+  const g = sctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+  g.addColorStop(0, 'rgba(200, 224, 255, 0.45)');
+  g.addColorStop(0.35, 'rgba(158, 205, 255, 0.24)');
+  g.addColorStop(1, 'rgba(140, 190, 255, 0)');
+  sctx.fillStyle = g;
+  sctx.fillRect(0, 0, 128, 128);
+
+  // 光心（带惯性的平滑坐标）；粒子为向外漾开的「光尘」
+  let tx = 0, ty = 0, mx = -999, my = -999;
+  let prevX = -999, prevY = -999;
+  let vx = 0, vy = 0;
+  let active = false;
+  const particles = [];
+
+  heroEl.addEventListener('pointermove', (e) => {
+    const r = heroEl.getBoundingClientRect();
+    tx = e.clientX - r.left;
+    ty = e.clientY - r.top;
+    if (!active) { mx = tx; my = ty; vx = 0; vy = 0; prevX = tx; prevY = ty; } // 首次进入直接落位，并复位上一帧路径，避免首帧拉出长线
+    active = true;
+    heroLight.style.opacity = '1';
+  });
+
+  heroEl.addEventListener('pointerleave', () => {
+    active = false;
+    heroLight.style.opacity = '0';
+  });
+
+  function rand(a, b) { return a + Math.random() * (b - a); }
+  function draw(x, y, size, alpha) {
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(sprite, x - size / 2, y - size / 2, size, size);
+  }
+
+  (function tick() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'source-over'; // 不叠加：重叠处亮度封顶，避免静止时刺眼
+
+    if (active) {
+      // 惯性跟手：弹簧物理，带动量与轻微过冲
+      vx += (tx - mx) * 0.06;
+      vy += (ty - my) * 0.06;
+      vx *= 0.86;
+      vy *= 0.86;
+      mx += vx;
+      my += vy;
+
+      // 沿移动路径补点撒尘，形成连续光带，快速甩动也不断线
+      const move = Math.hypot(mx - prevX, my - prevY);
+      if (move > 0.2) {
+        const segs = Math.max(1, Math.round(move / 6)); // 每约 6px 补一段点位
+        for (let s = 0; s < segs; s++) {
+          const k = s / segs;
+          const sx = prevX + (mx - prevX) * k;
+          const sy = prevY + (my - prevY) * k;
+          for (let i = 0; i < 2; i++) {
+            particles.push({
+              x: sx + rand(-8, 8),
+              y: sy + rand(-8, 8),
+              vx: rand(-1.4, 1.4),
+              vy: rand(-1.4, 1.4),
+              life: 0,
+              maxLife: rand(70, 120),
+              size: rand(24, 48)
+            });
+          }
+        }
+      }
+      prevX = mx;
+      prevY = my;
+
+      // 光心柔光
+      draw(mx, my, 340, 0.10);
+    }
+
+    // 更新并绘制粒子：向外飘散、逐渐变大变淡，最后熄灭
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.life++;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx *= 0.975; // 摩擦：值越大衰减越慢，光尘飘得更远
+      p.vy *= 0.975;
+      const t = p.life / p.maxLife;
+      draw(p.x, p.y, p.size + t * 190, (1 - t) * 0.12);
+      if (t >= 1) particles.splice(i, 1);
+    }
+
+    requestAnimationFrame(tick);
+  })();
+}
