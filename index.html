@@ -40,15 +40,27 @@
     <!-- ============ 1. Hero（滚动横向收缩） ============ -->
     <section class="hero hero-card" id="hero">
       <div class="container">
-        <!-- 头像：渐变圆块 + 姓名首字母 -->
-        <div class="avatar" role="img" aria-label="杨子江的头像">Y</div>
-        <p class="hero-kicker">计算机科学与技术 · 大一</p>
-        <h1 class="hero-name">杨子江</h1>
-        <p class="hero-nickname">River</p>
-        <p class="hero-subtitle">杨子江，计科大一，头发还在，问题不大</p>
-        <p class="hero-tags">个人标签：足球人，daydreamer，夜猫子，陶喆歌迷，拖延症晚期</p>
-        <p class="hero-status">当前状态：学习python中，努力适应全英授课中</p>
-        <p class="hero-body">以前我擅长做梦，也擅长把梦拖到明天；现在我想学会把梦落实到生活中的点点滴滴。生活不只有眼前的代码，还有码头另一边的薯条——别拦我，我正往那儿去。</p>
+        <!-- 昵称作为大标题，位于中上靠左 -->
+        <h1 class="hero-name">Yangtze</h1>
+        <!-- 专业/年级作为副标题 -->
+        <p class="hero-subtitle">计算机科学与技术 大一</p>
+        <!-- 左：自述介绍（hero 正文）单独成卡；右：个人标签 + 当前状态 两卡堆叠 -->
+        <div class="hero-cards">
+          <div class="hero-glass">
+            <p class="hero-glass-label">自述介绍</p>
+            <p class="hero-glass-text">我喜欢梦，喜欢研究梦，以前我擅长做梦，也擅长把梦拖到明天；现在我想学会把梦落实到生活中的点点滴滴。</p>
+          </div>
+          <div class="hero-cards-right">
+            <div class="hero-glass">
+              <p class="hero-glass-label">个人标签</p>
+              <p class="hero-glass-text">足球高手，夜猫子，陶喆歌迷，拖延症晚期</p>
+            </div>
+            <div class="hero-glass">
+              <p class="hero-glass-label">当前状态</p>
+              <p class="hero-glass-text">学习python中，努力适应全英授课中</p>
+            </div>
+          </div>
+        </div>
       </div>
       <canvas class="hero-light" id="heroLight" aria-hidden="true"></canvas>
       <div class="hero-grain" aria-hidden="true"></div>

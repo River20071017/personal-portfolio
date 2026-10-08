@@ -7,12 +7,11 @@
 
 :root {
   /* 占位渐变色值，V2 再精调 */
-  --grad-avatar: linear-gradient(135deg, #6366f1, #a855f7);
   --grad-cover-1: linear-gradient(135deg, rgba(99, 102, 241, 0.35), rgba(168, 85, 247, 0.25));
   --grad-cover-2: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(239, 68, 68, 0.3));
 
-  /* 深色背景（适配铺满的暗调底图） */
-  --bg: #0b0f1a;
+  /* 深色背景：冷调宇宙，深夜屏幕感的靛蓝 */
+  --bg: #0a1126;
   --bg-spot-1: rgba(184, 169, 232, 0.5);
   --bg-spot-2: rgba(184, 212, 240, 0.5);
 
@@ -174,9 +173,9 @@ a {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  text-align: center;
+  text-align: left;
   background-image: url("assets/img/hero-bg.jpg");
   background-size: cover;
   background-position: center;
@@ -216,66 +215,82 @@ a {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* 左对齐 + 靠左黄金比例：内容块左缘约在视口 8% 处，整体上移 6vh 落在中上部 */
 .hero .container {
   position: relative;
   z-index: 2;
+  width: 100%;
+  max-width: 720px;
+  margin: 0;
+  margin-top: -6vh;
+  padding: 0 24px 0 clamp(24px, 8vw, 140px);
 }
 
-.avatar {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%; /* 「圆块」为需求本身，非装饰圆角 */
-  background: var(--grad-avatar);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  color: #fff;
-  margin-bottom: 32px;
-}
-
-.hero-kicker {
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 16px;
-}
-
+/* 昵称作为大标题 */
 .hero-name {
-  font-size: clamp(2.6rem, 7vw, 5rem);
-  line-height: 1.05;
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  line-height: 1.02;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-top: 14vh;
+  margin-left: clamp(24px, 5vw, 80px);
+}
+
+/* 专业/年级作为副标题 */
+.hero-subtitle {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  margin-top: 14px;
+  margin-left: clamp(24px, 5vw, 80px);
+}
+
+/* 卡片区两栏：左列自述介绍（窄），右列个人标签 + 当前状态（宽），整体匀称 */
+.hero-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 720px;
+  margin-top: 48px;
+  align-items: stretch;
+}
+
+.hero-cards-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 毛玻璃玻璃盒：半透明磨砂背景，虚化透出背景图，让文字从背景中「浮」出来 */
+.hero-glass {
+  padding: 20px 24px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24),
+              inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.hero-glass-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
   margin-bottom: 8px;
 }
 
-.hero-nickname {
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 20px;
-}
-
-.hero-subtitle {
-  color: rgba(255, 255, 255, 0.9);
-  max-width: 560px;
-}
-
-.hero-tags {
-  color: rgba(255, 255, 255, 0.8);
-  max-width: 560px;
-  margin-top: 16px;
-}
-
-.hero-status {
-  color: rgba(255, 255, 255, 0.8);
-  max-width: 560px;
-  margin-top: 8px;
-}
-
-.hero-body {
-  color: rgba(255, 255, 255, 0.85);
-  max-width: 560px;
-  margin-top: 24px;
+.hero-glass-text {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1rem;
+  line-height: 1.65;
 }
 
 /* ============ 2. 兴趣爱好（中央聚焦轮播） ============ */
 .hobby-section {
-  padding-top: 96px;
+  padding-top: 40px;
   padding-bottom: 140px;
 }
 
@@ -325,6 +340,7 @@ a {
 }
 
 .car-card {
+  position: relative;
   flex: 0 0 auto;
   width: 640px; /* JS 按视口 68% 覆盖 */
   border-radius: 20px;
@@ -333,11 +349,21 @@ a {
   flex-direction: column;
   gap: 20px;
   color: #2d2d2d;
-  transition: transform 0.35s ease;
+  /* 悬空投影 */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+  transform-style: preserve-3d; /* 让厚度底面参与 3D 空间 */
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); /* 离开后缓慢弹回 */
+  will-change: transform;
 }
 
-.car-card:hover {
-  transform: translateY(-8px);
+/* 卡片厚度：向 Z 负方向铺一层深色底面，倾斜时露出侧面，形成实体厚度 */
+.car-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(16, 22, 44, 0.55);
+  transform: translateZ(-16px);
 }
 
 /* 三块渐变：统一走蓝紫同族色（呼应头像与站点主色），低饱和偏粉彩更柔和；
@@ -495,7 +521,8 @@ a {
   text-decoration: none;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease;
+  will-change: transform;
 }
 
 .nav-feedback:hover {

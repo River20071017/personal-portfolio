@@ -320,3 +320,42 @@ if (heroEl && heroLight) {
     requestAnimationFrame(tick);
   })();
 }
+
+// ============ 磁吸按钮：鼠标靠近时按钮向鼠标方向轻微吸附，离开后回弹 ============
+const magneticBtn = document.querySelector('.nav-feedback');
+if (magneticBtn) {
+  const strength = 0.35; // 吸附强度：偏移 = 按钮中心到鼠标距离的 35%
+  magneticBtn.addEventListener('mousemove', (e) => {
+    const r = magneticBtn.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width / 2);
+    const dy = e.clientY - (r.top + r.height / 2);
+    magneticBtn.style.transform = `translate(${dx * strength}px, ${dy * strength}px)`;
+  });
+  magneticBtn.addEventListener('mouseleave', () => {
+    magneticBtn.style.transform = 'translate(0, 0)';
+  });
+}
+
+// ============ 兴趣爱好卡片 3D 倾斜：朝鼠标方向倾斜（最大 12 度），内容浮于表面，离开缓弹 ============
+const carTrack = document.getElementById('carTrack');
+if (carTrack) {
+  const MAX_TILT = 6;
+  carTrack.addEventListener('mousemove', (e) => {
+    const card = e.target.closest('.car-card');
+    if (!card) return;
+    const r = card.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+    const rotX = (py - 0.5) * 2 * MAX_TILT; // 鼠标在上，上边缘翘起
+    const rotY = (0.5 - px) * 2 * MAX_TILT; // 鼠标在右，右边缘翘起
+    card.style.transition = 'transform 0.08s ease-out'; // 跟手时近乎即时
+    card.style.transform = `perspective(750px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) translateY(-8px)`;
+  });
+  carTrack.addEventListener('mouseout', (e) => {
+    const card = e.target.closest('.car-card');
+    if (card && !card.contains(e.relatedTarget)) {
+      card.style.transition = ''; // 恢复 CSS 的 0.6s 缓弹
+      card.style.transform = '';
+    }
+  });
+}
