@@ -1051,7 +1051,9 @@ main {
   margin: 24px 0 40px;
 }
 
-.feedback-form textarea {
+.feedback-form textarea,
+.feedback-form input,
+.feedback-form select {
   width: 100%;
   padding: 14px;
   border: 1px solid var(--line);
@@ -1059,11 +1061,48 @@ main {
   background: rgba(255, 255, 255, 0.06);
   color: var(--text);
   font: inherit;
+}
+
+.feedback-form textarea {
   resize: vertical;
+}
+
+.feedback-form input::placeholder,
+.feedback-form textarea::placeholder {
+  color: rgba(238, 241, 246, 0.45);
+}
+
+.feedback-form select {
+  appearance: auto;
+  cursor: pointer;
+}
+
+.feedback-form select option {
+  background: #111831;
+  color: var(--text);
 }
 
 .feedback-submit {
   align-self: flex-start;
+}
+
+.feedback-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.feedback-status {
+  min-height: 1.4em;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.feedback-status.is-ok {
+  color: #86efac;
+}
+
+.feedback-status.is-error {
+  color: #f87171;
 }
 
 /* ============ 5. 数字分身（敬请期待） ============ */

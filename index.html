@@ -232,13 +232,33 @@
       <button class="feedback-modal-close" type="button" data-close aria-label="关闭">×</button>
       <h2 class="feedback-modal-title" id="feedbackModalTitle">你的反馈</h2>
       <p class="feedback-modal-note">主页还在持续优化中，若有建议，请给我反馈</p>
-      <form class="feedback-form" action="mailto:18210081017@163.com" method="post" enctype="text/plain">
-        <textarea name="body" rows="6" placeholder="写下你的建议……"></textarea>
-        <button type="submit" class="nav-feedback feedback-submit">发送反馈</button>
+      <form class="feedback-form" id="feedbackForm">
+        <input type="text" id="feedbackName" name="name" placeholder="怎么称呼你？（可不填）" />
+        <select id="feedbackRelation" name="relation">
+          <option value="">你和我的关系（可不填）</option>
+          <option value="同学">同学</option>
+          <option value="老师">老师</option>
+          <option value="家人">家人</option>
+          <option value="朋友">朋友</option>
+          <option value="同事">同事</option>
+          <option value="其他">其他</option>
+          <option value="不便透露">不便透露</option>
+        </select>
+        <select id="feedbackDevice" name="device">
+          <option value="">用什么设备访问的？（可不填）</option>
+          <option value="电脑">电脑</option>
+          <option value="手机">手机</option>
+          <option value="平板">平板</option>
+          <option value="其他">其他</option>
+        </select>
+        <textarea id="feedbackText" name="body" rows="6" placeholder="写下你的建议……" required></textarea>
+        <button type="button" class="nav-feedback feedback-submit" id="feedbackSend">发送反馈</button>
+        <p class="feedback-status" id="feedbackStatus" role="status"></p>
       </form>
     </div>
   </div>
 
+  <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

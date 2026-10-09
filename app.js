@@ -454,13 +454,22 @@ taozheAudio.addEventListener('error', () => {
 });
 
 // ============ 反馈弹窗：本页局部窗口 ============
+// Supabase 配置：feedback 表已开启 RLS，匿名用户仅允许插入（INSERT）
+const SUPABASE_URL = 'https://lpkudvjklxmnjzydcppa.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxwa3VkdmprbHhtbmp6eWRjcHBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1MDExMDcsImV4cCI6MjEwNzA3NzEwN30.7xmCldF6Z9gjEQM2Vu-TJk8CoSwyniM2kZ1TOj1_QsY';
+const SITE_VERSION = 'v3';
+
 const feedbackBtn = document.getElementById('feedbackBtn');
 const feedbackModal = document.getElementById('feedbackModal');
 
 if (feedbackBtn && feedbackModal) {
+  const feedbackForm = document.getElementById('feedbackForm');
+  const feedbackStatus = document.getElementById('feedbackStatus');
+
   function openFeedback() {
     feedbackModal.classList.add('is-open');
     feedbackModal.setAttribute('aria-hidden', 'false');
+    if (feedbackStatus) feedbackStatus.textContent = '';
     document.body.style.overflow = 'hidden'; // 防止背景滚动
   }
 
@@ -470,7 +479,68 @@ if (feedbackBtn && feedbackModal) {
     document.body.style.overflow = '';
   }
 
+  function setStatus(msg, ok) {
+    if (!feedbackStatus) return;
+    feedbackStatus.textContent = msg;
+    feedbackStatus.classList.toggle('is-error', !ok);
+    feedbackStatus.classList.toggle('is-ok', ok);
+  }
+
   feedbackBtn.addEventListener('click', openFeedback);
+
+  // 发送：数据写入 Supabase 的 feedback 表；字段：昵称/关系/设备/建议/版本号
+  const feedbackSend = document.getElementById('feedbackSend');
+  if (feedbackSend) {
+    feedbackSend.addEventListener('click', async () => {
+      const nameEl = document.getElementById('feedbackName');
+      const relationEl = document.getElementById('feedbackRelation');
+      const deviceEl = document.getElementById('feedbackDevice');
+      const textEl = document.getElementById('feedbackText');
+      const name = nameEl ? nameEl.value.trim() : '';
+      const relation = relationEl ? relationEl.value : '';
+      const device = deviceEl ? deviceEl.value : '';
+      const message = textEl ? textEl.value.trim() : '';
+
+      if (!message) {
+        setStatus('请先写下你的建议', false);
+        if (textEl) textEl.focus();
+        return;
+      }
+
+      // 网络或 CDN 异常导致 supabase-js 未加载时的兜底提示
+      if (!window.supabase) {
+        setStatus('反馈服务组件加载失败，请检查网络后刷新重试', false);
+        return;
+      }
+
+      // 防重复提交：发送期间禁用按钮，失败时输入内容全部保留
+      feedbackSend.disabled = true;
+      feedbackSend.textContent = '发送中……';
+      setStatus('', true);
+
+      try {
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const { error } = await sb.from('feedback').insert({
+          name: name || null,
+          relation: relation || null,
+          device: device || null,
+          message: message,
+          version: SITE_VERSION,
+        });
+        if (error) throw error;
+
+        setStatus('发送成功，感谢你的反馈！', true);
+        feedbackForm.reset();
+        setTimeout(closeFeedback, 1200); // 短暂展示成功提示后自动关闭
+      } catch (err) {
+        console.error('反馈提交失败：', err);
+        setStatus('发送失败，请检查网络后重试（内容未丢失）', false);
+      } finally {
+        feedbackSend.disabled = false;
+        feedbackSend.textContent = '发送反馈';
+      }
+    });
+  }
 
   // 点击遮罩或关闭按钮关闭
   feedbackModal.addEventListener('click', (e) => {
