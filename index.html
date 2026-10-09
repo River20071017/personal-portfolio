@@ -31,7 +31,7 @@
         <li><a href="#digital-twin">数字分身</a></li>
         <li><a href="#contact">联系我</a></li>
       </ul>
-      <a class="nav-feedback" href="feedback.html">你的反馈</a>
+      <button class="nav-feedback" id="feedbackBtn" type="button">你的反馈</button>
     </nav>
   </header>
 
@@ -39,7 +39,8 @@
 
     <!-- ============ 1. Hero（滚动横向收缩） ============ -->
     <section class="hero hero-card" id="hero">
-      <div class="container">
+      <div class="hero-layout">
+        <div class="container">
         <!-- 昵称作为大标题，位于中上靠左 -->
         <h1 class="hero-name">Yangtze</h1>
         <!-- 专业/年级作为副标题 -->
@@ -61,6 +62,26 @@
             <p class="hero-glass-text">计算机科学与技术专业大一学生。目前在学习 Python 与数据结构基础，适应全英文授课环境，白天在梦里，晚上在终端里。课余热爱踢足球，球场里是高手，代码里是新手。希望在实践中积累经验，稳步提升专业能力。目前主修两门课：Python，以及在全英授课里努力听懂每一个单词。</p>
           </div>
         </div>
+      </div>
+
+        <!-- 技术栈卡（右侧，随时编辑条目与百分比） -->
+        <aside class="hero-skills" aria-label="技术栈">
+          <h3 class="skills-title">技术栈</h3>
+          <ul class="skills-list">
+            <li class="skill-item">
+              <div class="skill-meta"><span class="skill-name">Python</span><span class="skill-pct">5%</span></div>
+              <div class="skill-bar"><div class="skill-fill" style="width: 5%"></div></div>
+            </li>
+            <li class="skill-item">
+              <div class="skill-meta"><span class="skill-name">数据结构</span><span class="skill-pct">5%</span></div>
+              <div class="skill-bar"><div class="skill-fill" style="width: 5%"></div></div>
+            </li>
+            <li class="skill-item">
+              <div class="skill-meta"><span class="skill-name">网页三件套</span><span class="skill-pct">5%</span></div>
+              <div class="skill-bar"><div class="skill-fill" style="width: 5%"></div></div>
+            </li>
+          </ul>
+        </aside>
       </div>
       <canvas class="hero-light" id="heroLight" aria-hidden="true"></canvas>
       <div class="hero-grain" aria-hidden="true"></div>
@@ -134,18 +155,13 @@
       <div class="hobby-divider" aria-hidden="true"></div>
     </section>
 
-    <!-- ============ 3. 个人项目（左文右图） ============ -->
+    <!-- ============ 3. 个人项目（顶部标题 + 中央 CTA） ============ -->
     <section class="section" id="projects">
       <div class="container">
-        <div class="split-text">
-          <h2 class="section-title">个人项目</h2>
-          <ol class="project-list">
-            <li>个人网页制作</li>
-            <li>暂无</li>
-            <li>暂无</li>
-            <li>暂无</li>
-          </ol>
-        </div>
+        <h2 class="project-heading">个人项目</h2>
+        <a class="project-cta" href="projects.html" aria-label="查看项目">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/></svg>
+        </a>
       </div>
     </section>
 
@@ -155,6 +171,7 @@
         <h2 class="digital-twin-title">数字分身</h2>
         <p class="digital-twin-coming">敬请期待！</p>
       </div>
+      <div class="hobby-divider" aria-hidden="true"></div>
     </section>
 
     <!-- ============ 5. 联系我（左文右图） ============ -->
@@ -166,8 +183,6 @@
             <li class="contact-item">
               <span class="contact-icon" aria-hidden="true">📧</span>
               <a href="mailto:18210081017@163.com">18210081017@163.com</a>
-              <span> or </span>
-              <a href="mailto:3026445080@tju.edu.cn">3026445080@tju.edu.cn</a>
             </li>
             <li class="contact-item">
               <span class="contact-icon" aria-hidden="true">💻</span>
@@ -180,7 +195,9 @@
           </ul>
           <p class="contact-note">主页还在持续优化中，若有建议，请给我反馈</p>
         </div>
-        <div class="split-media" aria-hidden="true"></div>
+        <div class="split-media contact-media" aria-hidden="true">
+          <img src="assets/img/contact.jpg" alt="" loading="lazy" />
+        </div>
       </div>
     </section>
 
@@ -207,6 +224,21 @@
       <span class="ab-time" id="abDur">0:00</span>
     </div>
   </div>
+
+  <!-- ============ 反馈弹窗（本页局部窗口） ============ -->
+  <div class="feedback-modal" id="feedbackModal" aria-hidden="true">
+    <div class="feedback-modal-scrim" data-close></div>
+    <div class="feedback-modal-card" role="dialog" aria-modal="true" aria-labelledby="feedbackModalTitle">
+      <button class="feedback-modal-close" type="button" data-close aria-label="关闭">×</button>
+      <h2 class="feedback-modal-title" id="feedbackModalTitle">你的反馈</h2>
+      <p class="feedback-modal-note">主页还在持续优化中，若有建议，请给我反馈</p>
+      <form class="feedback-form" action="mailto:18210081017@163.com" method="post" enctype="text/plain">
+        <textarea name="body" rows="6" placeholder="写下你的建议……"></textarea>
+        <button type="submit" class="nav-feedback feedback-submit">发送反馈</button>
+      </form>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>

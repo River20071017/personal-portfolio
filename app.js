@@ -5,6 +5,11 @@ const entryGate = document.getElementById('entryGate');
 const gateBtnLeft = document.getElementById('gateBtnLeft');
 const gateBtnRight = document.getElementById('gateBtnRight');
 
+// 带锚点进入（如从项目页「返回主页」）时直接跳过 Entry Gate
+if (window.location.hash) {
+  entryGate.style.display = 'none';
+}
+
 gateBtnLeft.addEventListener('click', () => {
   gateBtnLeft.textContent = 'siuuuuuu!!!';
 });
@@ -447,3 +452,68 @@ taozheAudio.addEventListener('error', () => {
   console.error('音频 error：', e);
   alert('无法播放歌曲：' + msg);
 });
+
+// ============ 反馈弹窗：本页局部窗口 ============
+const feedbackBtn = document.getElementById('feedbackBtn');
+const feedbackModal = document.getElementById('feedbackModal');
+
+if (feedbackBtn && feedbackModal) {
+  function openFeedback() {
+    feedbackModal.classList.add('is-open');
+    feedbackModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden'; // 防止背景滚动
+  }
+
+  function closeFeedback() {
+    feedbackModal.classList.remove('is-open');
+    feedbackModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  feedbackBtn.addEventListener('click', openFeedback);
+
+  // 点击遮罩或关闭按钮关闭
+  feedbackModal.addEventListener('click', (e) => {
+    if (e.target.closest('[data-close]')) closeFeedback();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && feedbackModal.classList.contains('is-open')) {
+      closeFeedback();
+    }
+  });
+}
+
+// ============ 个人项目 Scroll-driven 缩放：贴近边缘分离缩小，居中充满屏幕 ============
+const projectsSec = document.getElementById('projects');
+
+function updateProjectsZoom() {
+  if (!projectsSec) return;
+  const vh = window.innerHeight;
+  const r = projectsSec.getBoundingClientRect();
+
+  // 卡片中心与视口中心的接近程度：居中时为 0，越靠边越大
+  const center = r.top + r.height / 2;
+  const gap = Math.abs(center - vh / 2);
+  let p = 1 - gap / (vh * 0.7);
+  p = Math.max(0, Math.min(1, p));
+
+  // cubic ease-out：收尾更「粘」，居中时稳稳贴满
+  const t = 1 - Math.pow(1 - p, 3);
+  const scale = 0.86 + 0.14 * t;
+
+  projectsSec.style.transform = `scale(${scale.toFixed(4)})`;
+}
+
+let projectsRaf = null;
+function scheduleProjectsZoom() {
+  if (projectsRaf) return;
+  projectsRaf = requestAnimationFrame(() => {
+    projectsRaf = null;
+    updateProjectsZoom();
+  });
+}
+
+window.addEventListener('scroll', scheduleProjectsZoom, { passive: true });
+window.addEventListener('resize', scheduleProjectsZoom, { passive: true });
+updateProjectsZoom();

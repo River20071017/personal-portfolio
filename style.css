@@ -33,7 +33,23 @@
 body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--text);
+  background-color: var(--bg);
   line-height: 1.6;
+}
+
+/* 氛围底：固定视口层，永远铺在内容之后（z-index: -1，随滚动留在原地）。
+   上层极淡噪点消死板感；下层三团低饱和光晕（紫 / 蓝 / 青，呼应卡片配色）。 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 58% 46% at 10% 6%, rgba(124, 105, 235, 0.28), transparent 65%),
+    radial-gradient(ellipse 50% 40% at 90% 20%, rgba(74, 118, 247, 0.22), transparent 65%),
+    radial-gradient(ellipse 60% 45% at 50% 96%, rgba(56, 190, 180, 0.14), transparent 65%);
 }
 
 a {
@@ -134,19 +150,86 @@ a {
   padding: 112px 0;
 }
 
-/* 靛蓝背景：全局底色已删除，按区块单独添加 */
+/* 靛蓝底色统一由 body 承载：区块保持透明，让氛围光晕透出来 */
 #hobbies,
-#contact,
 #digital-twin {
-  background-color: var(--bg);
+  background-color: transparent;
 }
 
-/* 个人项目：用实景照片作背景，占约 1.4 屏并垂直居中 */
+/* 联系我：上方留白收紧 */
+#contact {
+  padding-top: 40px;
+}
+
+/* 个人项目：用实景照片作背景，标题在上、CTA 居中。
+   滚动临近时卡片以中心为原点缩放：贴近边缘分离缩小，居中时充满屏幕 */
 #projects {
+  position: relative;
   background: url("assets/img/projects-bg.jpg") center / cover no-repeat;
-  min-height: 140vh;
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding-top: 24px;
+  transform-origin: center center;
+  will-change: transform;
+  /* 缩小分离后的卡片边缘：贴合靛蓝背景的柔和描边 + 弥散阴影 */
+  box-shadow: inset 0 0 0 1px rgba(126, 138, 220, 0.3),
+              inset 0 0 0 2px rgba(126, 138, 220, 0.1),
+              0 30px 80px rgba(0, 0, 0, 0.5);
+}
+
+/* 容器纵向布局，供 CTA 垂直居中 */
+#projects .container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.project-heading {
+  text-align: center;
+  font-family: 'Kaushan Script', cursive;
+  font-size: 3.6rem;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #ffffff 0%, #d6dcff 45%, #ffffff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 中央 CTA：圆形毛玻璃按钮，内嵌白色纸飞机 */
+.project-cta {
+  margin-top: auto;
+  margin-bottom: auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(10, 17, 38, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform: translate(-16px, -14px); /* 相对居中位置往左上微调 */
+  transition: transform 0.25s ease, background-color 0.25s ease;
+}
+
+.project-cta svg {
+  width: 50px;
+  height: 50px;
+  color: #fff;
+}
+
+.project-cta:hover {
+  transform: translate(-16px, -20px) scale(1.05);
+  background: rgba(10, 17, 38, 0.55);
 }
 
 /* Hero 首屏：靛蓝作底色，填补背景图未覆盖的空白部分 */
@@ -154,9 +237,9 @@ a {
   background-color: var(--bg);
 }
 
-/* 内容最底层铺靛蓝：Hero 滚动裁切时露出的边缘、区块间的间隙都是靛蓝 */
+/* 内容区不再铺底色：Hero 裁切露出的边缘直接透出 body 的靛蓝 + 氛围光晕 */
 main {
-  background-color: var(--bg);
+  background-color: transparent;
 }
 
 .section-title {
@@ -184,6 +267,18 @@ main {
 .split-media {
   aspect-ratio: 4 / 3;
   background: var(--grad-cover-1);
+}
+
+/* 联系我右侧实拍图：填满 4:3 区域 */
+.contact-media {
+  overflow: hidden;
+}
+
+.contact-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* ============ 1. Hero（滚动横向裁剪收缩：两侧收窄、文字不缩放、高度保持 100vh） ============ */
@@ -239,15 +334,27 @@ main {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* 左对齐 + 靠左黄金比例：内容块左缘约在视口 8% 处，整体上移 6vh 落在中上部 */
+/* 左对齐 + 靠左黄金比例：内容块左缘约在视口 8% 处 */
+.hero-layout {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  margin-top: -6vh; /* 整体上移 6vh，落在中上部 */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(16px, 3vw, 48px);
+}
+
 .hero .container {
   position: relative;
   z-index: 2;
   width: 100%;
   max-width: 720px;
   margin: 0;
-  margin-top: -6vh;
   padding: 0 24px 0 clamp(24px, 8vw, 140px);
+  flex: 1 1 auto;
+  min-width: 0; /* 防止长文本撑爆 flex 行 */
 }
 
 /* 昵称作为大标题 */
@@ -311,9 +418,85 @@ main {
   line-height: 1.65;
 }
 
+/* ============ 技术栈卡（Hero 右侧，与其余毛玻璃卡同风格） ============ */
+.hero-skills {
+  flex: 0 0 auto;
+  width: clamp(240px, 26vw, 300px);
+  margin-right: clamp(24px, 7vw, 120px);
+  padding: 20px 24px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24),
+              inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.skills-title {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 16px;
+}
+
+.skills-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.skill-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+
+.skill-name {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.skill-pct {
+  color: rgba(255, 255, 255, 0.7);
+  font-variant-numeric: tabular-nums;
+}
+
+.skill-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+/* 科技感进度条：渐变填充 + 辉光 + 缓慢流动 */
+.skill-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+  background-size: 200% 100%;
+  box-shadow: 0 0 10px rgba(129, 140, 248, 0.55);
+  animation: skill-flow 3.2s linear infinite;
+}
+
+@keyframes skill-flow {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero-skills {
+    display: none;
+  }
+}
+
 /* ============ 2. 兴趣爱好（中央聚焦轮播） ============ */
 .hobby-section {
-  padding-top: 40px;
+  padding-top: 140px;
   padding-bottom: 140px;
 }
 
@@ -810,26 +993,7 @@ main {
   background: var(--text);
 }
 
-/* ============ 4. 个人项目 ============ */
-.project-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.project-list li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.project-list li::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  background: var(--text-muted);
-}
+/* ============ 4. 个人项目（仅居中标题，列表已移除） ============ */
 
 /* ============ 6. 联系我 ============ */
 .contact-list {
@@ -1009,4 +1173,105 @@ main {
   top: 16%;
   left: 87%;
   transform: translate(-50%, -50%);
+}
+
+/* ============ 项目归档页（projects.html） ============ */
+.proj-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 640px;
+}
+
+.proj-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 22px;
+  background: var(--line);
+  border-radius: 14px;
+  font-size: 1.05rem;
+}
+
+.proj-num {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: #fff;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+}
+
+/* ============ 反馈弹窗 ============ */
+.feedback-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.feedback-modal.is-open {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.feedback-modal-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 12, 24, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.feedback-modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(560px, calc(100% - 40px));
+  padding: 32px;
+  border-radius: 20px;
+  background: #111831;
+  border: 1px solid var(--line);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+.feedback-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 1.3rem;
+  line-height: 1;
+  border: none;
+  cursor: pointer;
+}
+
+.feedback-modal-title {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.feedback-modal-note {
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.feedback-modal .feedback-form {
+  margin: 0;
 }
